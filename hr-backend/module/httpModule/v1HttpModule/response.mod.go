@@ -2,6 +2,7 @@ package v1HttpModule
 
 import (
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jericho-yu/aid/operation"
 )
@@ -39,7 +40,7 @@ var (
 	FailResponse    FailResponseModule
 )
 
-func (*ResponseModule) New(c *gin.Context, config ResponseConfig) *ResponseModule {
+func (*ResponseModule) NewInstance(c *gin.Context, config ResponseConfig) *ResponseModule {
 	return &ResponseModule{C: c, Config: config}
 }
 

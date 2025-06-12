@@ -28,7 +28,7 @@ func (*RezipApi) Upload(c *gin.Context) {
 	var (
 		title     = "重新压缩"
 		file      *multipart.FileHeader
-		res       = v1HttpModule.Response.New(c, v1HttpModule.ResponseConfig{})
+		res       = v1HttpModule.Response.NewInstance(c, v1HttpModule.ResponseConfig{})
 		err       error
 		srcFile   multipart.File
 		buf       []byte
