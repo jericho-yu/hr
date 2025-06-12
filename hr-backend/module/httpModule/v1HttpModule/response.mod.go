@@ -85,6 +85,25 @@ func (my *SuccessResponseModule) Data(msg string, data any) {
 	)
 }
 
+func (my *SuccessResponseModule) Redirect(msg, url string) {
+	var message = "redirect"
+
+	if msg != "" {
+		message = msg
+	}
+
+	my.Code = 301
+
+	my.Response.C.JSON(
+		operation.Ternary(my.Response.Config.HttpStatusCodeMode == "", 200, my.Code),
+		map[string]any{
+			"code": my.Code,
+			"msg":  message,
+			"data": map[string]string{"url": url},
+		},
+	)
+}
+
 func (my *FailResponseModule) Nil(msg string) {
 	var message = "操作失败"
 

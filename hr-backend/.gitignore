@@ -1,0 +1,9 @@
+.vscode
+.idea
+
+.DS_Store
+*/**/.DS_Store
+
+__debug*
+*.pro
+*.dev

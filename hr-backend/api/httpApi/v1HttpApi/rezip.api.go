@@ -127,4 +127,8 @@ func (*RezipApi) Upload(c *gin.Context) {
 		res.Fail().Format("保存压缩文件失败：%s", err.Error())
 		return
 	}
+
+	res.Success().Data("上传成功", gin.H{
+		"to": c.Request.Host + "/upload/rezip/repacked.zip",
+	})
 }
