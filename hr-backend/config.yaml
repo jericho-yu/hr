@@ -1,3 +1,6 @@
 system:
-  log-dir: ./runtime/log
+  log-dir: ./storage/runtime/log
   port: 9900
+
+rezip:
+  out-dir: ./storage/runtime/rezip

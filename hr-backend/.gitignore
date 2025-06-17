@@ -7,6 +7,7 @@
 __debug*
 *.pro
 *.dev
+*.feature
 
 *.yaml
 

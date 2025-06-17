@@ -3,6 +3,7 @@ package v1HttpApi
 import (
 	"archive/zip"
 	"bytes"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"os"
@@ -113,7 +114,7 @@ func (*RezipApi) Upload(c *gin.Context) {
 		return
 	}
 
-	fs := filesystem.FileApp.NewByRel("./runtime/upload/rezip/repacked.zip")
+	fs := filesystem.FileApp.NewByRel(fmt.Sprintf("%s/repacked.zip", global.Config.Rezip.OutDir))
 	global.Logger.Info(title, zap.String("保存路径", fs.GetFullPath()))
 	if err = os.MkdirAll(fs.GetBasePath(), os.ModePerm); err != nil {
 		global.Logger.Error(title, zap.Errors("创建目录", []error{err}))
