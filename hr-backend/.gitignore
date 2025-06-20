@@ -10,5 +10,4 @@ __debug*
 *.feature
 
 *.yaml
-
 runtime/*
