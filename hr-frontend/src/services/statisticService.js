@@ -9,14 +9,15 @@ export class StatisticService {
   _collectData = {}
   _finalStatistic = {}
 
-  constructor(dateTitles = null, clockInData = null, collectData = null) {
+  constructor(dateTitles = null, clockInData = null, collectData = null, everydayData = null) {
     this._dateTitles = dateTitles || []
     this._clockInData = clockInData || {}
     this._collectData = collectData || {}
+    this._everydayData = everydayData || {}
   }
 
-  static new = (dateTitles = null, clockInData = null, collectData = null) =>
-    new StatisticService(dateTitles, clockInData, collectData)
+  static new = (dateTitles = null, clockInData = null, collectData = null, everydayData = null) =>
+    new StatisticService(dateTitles, clockInData, collectData, everydayData)
 
   static make = () => new StatisticService()
 
@@ -120,10 +121,22 @@ export class StatisticService {
                 `【${dateTitle.value}】国假加班 → ${collectDatumItem.value}`,
               )
             } else {
-              this._finalStatistic[name].overtimeClockOut++
-              this._finalStatistic[name].log.push(
-                `【${dateTitle.value}】加班缺卡 → ${clockInDatumItem.desc}`,
-              )
+              const everyday = this._everydayData[name].find(dateTitle.value)
+              if (everyday !== null) {
+                this._finalStatistic[name].overtimeClockOut++
+                this._finalStatistic[name].log.push(
+                  `【${dateTitle.value}】加班缺卡 → ${clockInDatumItem.desc}`,
+                )
+                return
+              }
+
+              if (everyday[11].value === '') {
+                this._finalStatistic[name].overtimeClockOut++
+                this._finalStatistic[name].log.push(
+                  `【${dateTitle.value}】加班缺卡 → ${clockInDatumItem.desc}`,
+                )
+                return
+              }
             }
           }
 
@@ -144,6 +157,7 @@ export class StatisticService {
               )
             }
           }
+
           // 三薪日加班
           if (
             dateTitle.dateType === DateType.holiday3 &&
@@ -155,12 +169,15 @@ export class StatisticService {
                 `【${dateTitle.value}】三薪加班 → ${collectDatumItem.value}`,
               )
             } else {
+              this._everydayData[name]
+
               this._finalStatistic[name].overtimeClockOut++
               this._finalStatistic[name].log.push(
                 `【${dateTitle.value}】加班缺卡 → ${clockInDatumItem.desc}`,
               )
             }
           }
+
           // 额外假期：用年假补充
           if (
             dateTitle.dateType === DateType.exHoliday &&
@@ -186,6 +203,7 @@ export class StatisticService {
               `【${dateTitle.value}】年假     → ${collectDatumItem.value}`,
             )
           }
+
           // 陪产假
           if (collectDatumItem.statistic.paternityLeave) {
             this._finalStatistic[name].paternityLeave++
@@ -193,6 +211,7 @@ export class StatisticService {
               `【${dateTitle.value}】陪产假   → ${collectDatumItem.value}`,
             )
           }
+
           // 调休
           if (collectDatumItem.statistic.compensatoryLeave) {
             this._finalStatistic[name].compensatoryLeave++
@@ -200,6 +219,7 @@ export class StatisticService {
               `【${dateTitle.value}】调休     → ${collectDatumItem.value}`,
             )
           }
+
           // 事假
           if (collectDatumItem.statistic.personalLeave) {
             this._finalStatistic[name].personalLeave++
@@ -207,6 +227,7 @@ export class StatisticService {
               `【${dateTitle.value}】事假     → ${collectDatumItem.value}`,
             )
           }
+
           // 病假
           if (collectDatumItem.statistic.sickLeave) {
             this._finalStatistic[name].sickLeave++
@@ -214,6 +235,7 @@ export class StatisticService {
               `【${dateTitle.value}】病假     → ${collectDatumItem.value}`,
             )
           }
+
           // 旷工
           if (
             [DateType.workday, DateType.exWorkday].includes(dateTitle.dateType) &&
@@ -224,6 +246,7 @@ export class StatisticService {
               `【${dateTitle.value}】旷工     → ${collectDatumItem.value}`,
             )
           }
+
           // 上班缺卡
           if (collectDatumItem.statistic.missingClockIn) {
             this._finalStatistic[name].missingClockIn++
@@ -231,6 +254,7 @@ export class StatisticService {
               `【${dateTitle.value}】上班缺卡 → ${collectDatumItem.value}`,
             )
           }
+
           // 下班缺卡
           if (collectDatumItem.statistic.missingClockOut) {
             this._finalStatistic[name].missingClockOut++
@@ -238,6 +262,7 @@ export class StatisticService {
               `【${dateTitle.value}】下班缺卡 → ${collectDatumItem.value}`,
             )
           }
+
           // 上班迟到
           if (collectDatumItem.statistic.lateClockIn) {
             this._finalStatistic[name].lateClockIn++
@@ -245,6 +270,7 @@ export class StatisticService {
               `【${dateTitle.value}】上班迟到 → ${collectDatumItem.value}`,
             )
           }
+
           // 下班早退
           if (collectDatumItem.statistic.earlyClockOut) {
             this._finalStatistic[name].earlyClockOut++
