@@ -182,7 +182,7 @@ import { ClockInService } from 'src/services/clockInService'
 import { CollectService } from 'src/services/collectService'
 import { StatisticService } from 'src/services/statisticService'
 
-import { EverydayModule } from 'src/modules/everydayModule'
+import { EveryDaysModule } from 'src/modules/everydayModule'
 
 const onUploaded = async function (files) {
   const file = files[0]
@@ -227,7 +227,15 @@ const onUploaded = async function (files) {
       }
 
       // 获取每日统计数据 -> 每日打卡
-      everydaySheet.eachRow((row) => everydayData[row.values[1].value] = EverydayModule.new(row.values))
+      everydaySheet.eachRow((row) => {
+        if (row.number === 1) return
+
+        const values = row.values
+        if (!(values[1] in everydayData)) {
+          everydayData[values[1]] = EveryDaysModule.new()
+        }
+        everydayData[values[1]].push(values)
+      })
 
       // 获取初始数据 -> 打卡
       clockInSheet.eachRow((row) => {
@@ -274,10 +282,7 @@ const onUploaded = async function (files) {
           dateTitle.data,
           clockInData,
           collectData,
-<<<<<<< HEAD
-=======
           everydayData,
->>>>>>> b8c572d2c578f38a0ae113a4ff43ea87267f5fe3
         )
         .parse()
         .data

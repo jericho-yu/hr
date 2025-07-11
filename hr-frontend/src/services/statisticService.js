@@ -98,13 +98,13 @@ export class StatisticService {
           let collectDatumItem = collectDatum[dateTitle.idx]
           let clockInDatumItem = this._clockInData[name][dateTitle.idx]
 
-          // todo: 调试用
-          if (name === "李伟") {
-            console.log(dateTitle.value)
-            console.log("日期", dateTitle)
-            console.log("统计", collectDatumItem)
-            console.log("打卡", clockInDatumItem)
-          }
+          // // todo: 调试用
+          // if (name === "李伟") {
+          //   console.log(dateTitle.value)
+          //   console.log("日期", dateTitle)
+          //   console.log("统计", collectDatumItem)
+          //   console.log("打卡", clockInDatumItem)
+          // }
 
           this._finalStatistic[name].collectData.push(collectDatumItem)
           this._finalStatistic[name].clockInData.push(clockInDatumItem)
@@ -121,16 +121,7 @@ export class StatisticService {
                 `【${dateTitle.value}】国假加班 → ${collectDatumItem.value}`,
               )
             } else {
-              const everyday = this._everydayData[name].find(dateTitle.value)
-              if (everyday !== null) {
-                this._finalStatistic[name].overtimeClockOut++
-                this._finalStatistic[name].log.push(
-                  `【${dateTitle.value}】加班缺卡 → ${clockInDatumItem.desc}`,
-                )
-                return
-              }
-
-              if (everyday[11].value === '') {
+              if (!this._everydayData[name].find(dateTitle.value)) {
                 this._finalStatistic[name].overtimeClockOut++
                 this._finalStatistic[name].log.push(
                   `【${dateTitle.value}】加班缺卡 → ${clockInDatumItem.desc}`,
@@ -156,16 +147,7 @@ export class StatisticService {
                 `【${dateTitle.value}】周末加班 → ${collectDatumItem.value}`,
               )
             } else {
-              const everyday = this._everydayData[name].find(dateTitle.value)
-              if (everyday !== null) {
-                this._finalStatistic[name].overtimeClockOut++
-                this._finalStatistic[name].log.push(
-                  `【${dateTitle.value}】加班缺卡 → ${clockInDatumItem.desc}`,
-                )
-                return
-              }
-
-              if (everyday[11].value === '') {
+              if (!this._everydayData[name].find(dateTitle.value)) {
                 this._finalStatistic[name].overtimeClockOut++
                 this._finalStatistic[name].log.push(
                   `【${dateTitle.value}】加班缺卡 → ${clockInDatumItem.desc}`,
@@ -191,16 +173,7 @@ export class StatisticService {
                 `【${dateTitle.value}】三薪加班 → ${collectDatumItem.value}`,
               )
             } else {
-              const everyday = this._everydayData[name].find(dateTitle.value)
-              if (everyday !== null) {
-                this._finalStatistic[name].overtimeClockOut++
-                this._finalStatistic[name].log.push(
-                  `【${dateTitle.value}】加班缺卡 → ${clockInDatumItem.desc}`,
-                )
-                return
-              }
-
-              if (everyday[11].value === '') {
+              if (!this._everydayData[name].find(dateTitle.value)) {
                 this._finalStatistic[name].overtimeClockOut++
                 this._finalStatistic[name].log.push(
                   `【${dateTitle.value}】加班缺卡 → ${clockInDatumItem.desc}`,
