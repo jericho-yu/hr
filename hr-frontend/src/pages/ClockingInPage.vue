@@ -182,10 +182,13 @@ import { ClockInService } from 'src/services/clockInService'
 import { CollectService } from 'src/services/collectService'
 import { StatisticService } from 'src/services/statisticService'
 
+import { EverydayModule } from 'src/modules/everydayModule'
+
 const onUploaded = async function (files) {
   const file = files[0]
   const originalClockIn = []
   const originalCollect = []
+  const everydayData = {}
   let dateTitle = null // 日期表头
   let clockInData = {} // 打卡记录数据
   let collectData = {} // 汇总数据
@@ -203,6 +206,7 @@ const onUploaded = async function (files) {
 
       const clockInSheet = workbook.getWorksheet('打卡时间')
       const collectSheet = workbook.getWorksheet('月度汇总')
+      const everydaySheet = workbook.getWorksheet('每日统计')
 
       if (clockInSheet === undefined) {
         alert('工作表 “打卡时间” 不存在')
@@ -211,10 +215,19 @@ const onUploaded = async function (files) {
       }
 
       if (collectSheet === undefined) {
-        alert('工作表 “阅读汇总” 不存在')
-        console.error('工作表 “打卡时间” 不存在')
+        alert('工作表 “月度汇总” 不存在')
+        console.error('工作表 “月度汇总” 不存在')
         return
       }
+
+      if (everydaySheet === undefined) {
+        alert('工作表 “每日统计” 不存在')
+        console.error('工作表 “每日统计” 不存在')
+        return
+      }
+
+      // 获取每日统计数据 -> 每日打卡
+      everydaySheet.eachRow((row) => everydayData[row.values[1].value] = EverydayModule.new(row.values))
 
       // 获取初始数据 -> 打卡
       clockInSheet.eachRow((row) => {
@@ -261,6 +274,10 @@ const onUploaded = async function (files) {
           dateTitle.data,
           clockInData,
           collectData,
+<<<<<<< HEAD
+=======
+          everydayData,
+>>>>>>> b8c572d2c578f38a0ae113a4ff43ea87267f5fe3
         )
         .parse()
         .data
