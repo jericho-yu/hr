@@ -231,30 +231,39 @@ const onUploaded = async function (files) {
       })
 
       // 解析标题 -> 日期
-      dateTitle = DateTitleService.new(originalClockIn[0]).parse(
-        holiday3Dates.value,
-        exWorkdayDates.value,
-        holidayDates.value,
-        exHolidayDates.value,
-        startDay.value,
-      )
+      dateTitle = DateTitleService
+        .new(originalClockIn[0])
+        .parse(
+          holiday3Dates.value,
+          exWorkdayDates.value,
+          holidayDates.value,
+          exHolidayDates.value,
+          startDay.value,
+        )
 
       // 解析数据 -> 打卡
-      ClockInService.new(originalClockIn.slice(1), dateTitle)
+      ClockInService
+        .new(originalClockIn.slice(1), dateTitle)
         .parse()
-        .data.forEach((item) => (clockInData[item[1].value] = item))
+        .data
+        .forEach((item) => (clockInData[item[1].value] = item))
 
       // 解析数据 -> 汇总
-      CollectService.new(originalCollect.slice(1), dateTitle)
+      CollectService
+        .new(originalCollect.slice(1), dateTitle)
         .parse()
-        .data.forEach((item) => (collectData[item[1].value] = item))
+        .data
+        .forEach((item) => (collectData[item[1].value] = item))
 
       // 分析数据
-      finalStatistic = StatisticService.new(
-        dateTitle.data,
-        clockInData,
-        collectData,
-      ).parse().data
+      finalStatistic = StatisticService
+        .new(
+          dateTitle.data,
+          clockInData,
+          collectData,
+        )
+        .parse()
+        .data
 
       console.log('最终统计结果:', finalStatistic)
 
