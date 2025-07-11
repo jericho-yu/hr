@@ -96,12 +96,14 @@ export class StatisticService {
 
           let collectDatumItem = collectDatum[dateTitle.idx]
           let clockInDatumItem = this._clockInData[name][dateTitle.idx]
-          if (name === "安平生") {
-            console.log(dateTitle.value)
-            console.log("日期", dateTitle)
-            console.log("统计", collectDatumItem)
-            console.log("打卡", clockInDatumItem)
-          }
+
+          // todo: 调试用
+          // if (name === "安平生") {
+          //   console.log(dateTitle.value)
+          //   console.log("日期", dateTitle)
+          //   console.log("统计", collectDatumItem)
+          //   console.log("打卡", clockInDatumItem)
+          // }
 
           this._finalStatistic[name].collectData.push(collectDatumItem)
           this._finalStatistic[name].clockInData.push(clockInDatumItem)
