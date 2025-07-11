@@ -231,30 +231,39 @@ const onUploaded = async function (files) {
       })
 
       // 解析标题 -> 日期
-      dateTitle = DateTitleService.new(originalClockIn[0]).parse(
-        holiday3Dates.value,
-        exWorkdayDates.value,
-        holidayDates.value,
-        exHolidayDates.value,
-        startDay.value,
-      )
+      dateTitle = DateTitleService
+        .new(originalClockIn[0])
+        .parse(
+          holiday3Dates.value,
+          exWorkdayDates.value,
+          holidayDates.value,
+          exHolidayDates.value,
+          startDay.value,
+        )
 
       // 解析数据 -> 打卡
-      ClockInService.new(originalClockIn.slice(1), dateTitle)
+      ClockInService
+        .new(originalClockIn.slice(1), dateTitle)
         .parse()
-        .data.forEach((item) => (clockInData[item[1].value] = item))
+        .data
+        .forEach((item) => (clockInData[item[1].value] = item))
 
       // 解析数据 -> 汇总
-      CollectService.new(originalCollect.slice(1), dateTitle)
+      CollectService
+        .new(originalCollect.slice(1), dateTitle)
         .parse()
-        .data.forEach((item) => (collectData[item[1].value] = item))
+        .data
+        .forEach((item) => (collectData[item[1].value] = item))
 
       // 分析数据
-      finalStatistic = StatisticService.new(
-        dateTitle.data,
-        clockInData,
-        collectData,
-      ).parse().data
+      finalStatistic = StatisticService
+        .new(
+          dateTitle.data,
+          clockInData,
+          collectData,
+        )
+        .parse()
+        .data
 
       console.log('最终统计结果:', finalStatistic)
 
@@ -352,68 +361,70 @@ const generateExcel = async function (finalStatisticStore = {}, filename = '') {
   )
 
   // 添加数据
-  Object.entries(finalStatisticStore).forEach(([name, row]) => {
-    worksheet
-      .addRow({
-        name: name,
-        weekendOvertime: row.weekendOvertime || '',
-        holidayOvertime: row.holidayOvertime || '',
-        holiday3Overtime: row.holiday3Overtime || '',
-        annualLeave: row.annualLeave || '',
-        paternityLeave: row.paternityLeave || '',
-        compensatoryLeave: row.compensatoryLeave || '',
-        personalLeave: row.personalLeave || '',
-        sickLeave: row.sickLeave || '',
-        absenteeism: row.absenteeism || '',
-        missingClockIn: row.missingClockIn || '',
-        missingClockOut: row.missingClockOut || '',
-        lateClockIn: row.lateClockIn || '',
-        earlyClockOut: row.earlyClockOut || '',
-        overtimeClockOut: row.overtimeClockOut || '',
-        // reset: row.reset,
-        log: row.log
-          .map((item, idx) => `${(idx + 1).toString().padStart(3, '0')}、${item}`)
-          .join('\r\n'),
-      })
-      .eachCell((cell, idx) => {
-        let style = {
-          font: { name: '仿宋', size: 12, bold: false, color: { argb: ['000000'] } },
-          border: defaultBorder,
-          alignment: {
-            wrapText: true,
-            vertical: 'middle',
-            horizontal: idx !== 16 ? 'center' : 'left',
-          },
-        }
-
-        for (const item of [
-          { target: [2, 3, 4], color: '3D9C6A' }, // 绿色
-          { target: [5, 6, 7, 8, 9], color: '0000FF' }, // 蓝色
-          { target: [10, 11, 12, 13, 14, 15], color: 'FF0000' }, // 红色
-        ])
-          if (item.target.includes(idx)) {
-            style.font.color.argb = [item.color]
-            break
+  Object
+    .entries(finalStatisticStore)
+    .forEach(([name, row]) => {
+      worksheet
+        .addRow({
+          name: name,
+          weekendOvertime: row.weekendOvertime || '',
+          holidayOvertime: row.holidayOvertime || '',
+          holiday3Overtime: row.holiday3Overtime || '',
+          annualLeave: row.annualLeave || '',
+          paternityLeave: row.paternityLeave || '',
+          compensatoryLeave: row.compensatoryLeave || '',
+          personalLeave: row.personalLeave || '',
+          sickLeave: row.sickLeave || '',
+          absenteeism: row.absenteeism || '',
+          missingClockIn: row.missingClockIn || '',
+          missingClockOut: row.missingClockOut || '',
+          lateClockIn: row.lateClockIn || '',
+          earlyClockOut: row.earlyClockOut || '',
+          overtimeClockOut: row.overtimeClockOut || '',
+          // reset: row.reset,
+          log: row.log
+            .map((item, idx) => `${(idx + 1).toString().padStart(3, '0')}、${item}`)
+            .join('\r\n'),
+        })
+        .eachCell((cell, idx) => {
+          let style = {
+            font: { name: '仿宋', size: 12, bold: false, color: { argb: ['000000'] } },
+            border: defaultBorder,
+            alignment: {
+              wrapText: true,
+              vertical: 'middle',
+              horizontal: idx !== 16 ? 'center' : 'left',
+            },
           }
 
-        if ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].includes(idx))
-          style.font.bold = true
+          for (const item of [
+            { target: [2, 3, 4], color: '3D9C6A' }, // 绿色
+            { target: [5, 6, 7, 8, 9], color: '0000FF' }, // 蓝色
+            { target: [10, 11, 12, 13, 14, 15], color: 'FF0000' }, // 红色
+          ])
+            if (item.target.includes(idx)) {
+              style.font.color.argb = [item.color]
+              break
+            }
 
-        cell.font = style.font
-        cell.border = style.border
-        cell.alignment = style.alignment
-      })
+          if ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].includes(idx))
+            style.font.bold = true
 
-    // 设置冻结第一行和第一列
-    worksheet.views = [
-      {
-        state: 'frozen',
-        xSplit: 1, // 冻结第一列
-        ySplit: 1, // 冻结第一行
-        topLeftCell: 'B2', // 可滚动的区域从B2开始
-      },
-    ]
-  })
+          cell.font = style.font
+          cell.border = style.border
+          cell.alignment = style.alignment
+        })
+
+      // 设置冻结第一行和第一列
+      worksheet.views = [
+        {
+          state: 'frozen',
+          xSplit: 1, // 冻结第一列
+          ySplit: 1, // 冻结第一行
+          topLeftCell: 'B2', // 可滚动的区域从B2开始
+        },
+      ]
+    })
 
   worksheet.eachRow((row, rowNumber) => {
     // 偶数行
