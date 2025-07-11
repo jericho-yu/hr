@@ -192,7 +192,7 @@ export class Collect {
         this._status = true
         this._collectStatistic.normal = true
       }
-      if (matches.includes(',加班')) {
+      if (matches.includes('休息,加班') || matches.includes('外勤,加班')) {
         this._status = true
         this._collectStatistic.overtime = true
       }
@@ -252,7 +252,7 @@ export class Collect {
 
   _match(value) {
     const pattern =
-      /(正常|,加班|年假|陪产假|调休|事假|病假|旷工|上班缺卡|下班缺卡|上班迟到|下班早退|休息并打卡)/g
+      /(正常|休息,加班|外勤,加班|年假|陪产假|调休|事假|病假|旷工|上班缺卡|下班缺卡|上班迟到|下班早退|休息并打卡)/g
 
     const matches = String(value).match(pattern)
     return matches ? matches : ['未匹配']
